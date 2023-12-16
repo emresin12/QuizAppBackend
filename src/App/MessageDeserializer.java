@@ -1,9 +1,6 @@
 package App;
 
-import Model.Answer;
-import Model.Message;
-import Model.Question;
-import Model.Quiz;
+import Model.*;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
@@ -24,6 +21,9 @@ public class MessageDeserializer implements JsonDeserializer<Message> {
                 break;
             case "Answer":
                 payload = context.deserialize(jsonObject.get("payload"), Answer.class);
+                break;
+            case "JoinQuizRequest":
+                payload = context.deserialize(jsonObject.get("payload"), JoinQuizRequest.class);
                 break;
         }
 

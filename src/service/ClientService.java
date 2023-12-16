@@ -18,23 +18,25 @@ public class ClientService {
 
     public void createQuiz(Quiz quiz){
         //TODO handle create quiz
-        quizManager.addQuiz(quiz);
+        quizManager.createQuiz(quiz);
+    }
+    public void joinQuiz(Participant participant, int quizId){
+        quizManager.addParticipantToQuiz(quizId, participant);
+    }
+    public void answerQuestion(Participant participant, int quizId, Answer answer){
+        quizManager.answerQuestion(quiz, participant, answer);
 
     }
-    public void joinQuiz(Participant participant, Quiz quiz){
-        quizManager.addParticipantToQuiz(quiz, participant);
-    }
-    public void answerQuestion(Participant participant, Quiz quiz, Answer answer){
-        quizManager.answerQuestion(quiz, participant, answerIndex);
-
-    }
-    public void startQuiz(Message message){
+    public void startQuiz(int quizId){
         //TODO handle start quiz
+        quizManager.startQuiz(quizId);
     }
-    public void endQuiz(Message message){
+    public void endQuiz(int quizId){
         //TODO handle end quiz
+        quizManager.endQuiz(quiz);
     }
-    public void nextQuestion(Message message){
+    public void nextQuestion(int quizId){
         //TODO handle next question
+        quizManager.nextQuestion(quiz);
     }
 }

@@ -6,11 +6,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Answer {
-    private String answer;
-    private int questionIndex;
 
-    public Answer(String answer, int questionIndex, int participantIndex) {
-        this.answer = answer;
+    private int questionIndex;
+    private int optionIndex;
+
+    public Answer(int optionIndex, int questionIndex) {
+        this.optionIndex = optionIndex;
         this.questionIndex = questionIndex;
     }
 

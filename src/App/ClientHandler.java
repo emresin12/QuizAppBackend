@@ -2,6 +2,7 @@ package App;
 
 import Model.Message;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import controller.ClientController;
 
 import java.io.BufferedReader;
@@ -20,7 +21,12 @@ public class ClientHandler implements Runnable {
         this.socket = socket;
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new PrintWriter(socket.getOutputStream(), true);
-        this.gson = new Gson();
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Message.class, new MessageDeserializer());
+        Gson gson = gsonBuilder.create();
+
+        this.gson = gson;
         this.clientController = clientController;
     }
 
@@ -30,15 +36,12 @@ public class ClientHandler implements Runnable {
         try {
             String clientMessage;
             while ((clientMessage = in.readLine()) != null) {
-                Message message = gson.fromJson(clientMessage, Message.class);
-                Object payload = message.getPayload();
-                String payloadType = message.getObjectType();
 
-//                switch (payloadType):
-//                case "Quiz":
-//                    Quiz quiz = gson.fromJson(payload, Quiz.class);
-//
-//                    break;
+
+                Message message = gson.fromJson(clientMessage, Message.class);
+//                Object payload = message.getPayload();
+//                String payloadType = message.getObjectType();
+                clientController.RouteMessage(message, this);
 
                 System.out.println("Received message: " + message);
 
@@ -56,7 +59,8 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void SendMessage(String message) {
-        out.println(message);
+    public void sendMessage(Message message) {
+        String jsonString = gson.toJson(message);
+        out.println(jsonString);
     }
 }
