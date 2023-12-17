@@ -38,7 +38,6 @@ public class QuizManager {
         message.setPayload(quizId);
 
         quiz.getAdmin().getClientHandler().sendMessage(message);
-        quiz.setState(QuizState.WAITING_FOR_PLAYERS);
     }
     public void endQuiz(int quizId) {
         // TODO: handle for participants

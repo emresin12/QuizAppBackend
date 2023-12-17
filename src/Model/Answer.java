@@ -19,4 +19,5 @@ public class Answer {
         this.username = username;
     }
 
+
 }

@@ -30,8 +30,9 @@ public class ClientController {
                 break;
             case "create.quiz":
                 Participant admin = new Participant("admin", clientHandler);
-                Quiz quiz = (Quiz)message.getPayload();
-                quiz.setAdmin(admin);
+                CreateQuizRequest quizReq = (CreateQuizRequest)message.getPayload();
+                Quiz quiz = new Quiz(quizReq.getQuizName(), admin, quizReq.getQuestions());
+
                 clientService.createQuiz(quiz);
                 break;
             case "end.quiz":

@@ -13,8 +13,6 @@ import java.util.concurrent.Semaphore;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Quiz {
     private String quizName;
     private ArrayList<Question> questions;
@@ -22,6 +20,14 @@ public class Quiz {
     private int currentQuestionIndex = 0;
     private Participant admin;
     private QuizState state;
+
+    public Quiz(String quizName, Participant admin, ArrayList<Question> questions) {
+        this.quizName = quizName;
+        this.admin = admin;
+        this.state = QuizState.WAITING_FOR_PLAYERS;
+        this.questions = questions;
+        this.participants = new ArrayList<>();
+    }
 
 
     public synchronized void nextQuestion() {
