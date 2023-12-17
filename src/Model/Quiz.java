@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
@@ -61,9 +62,19 @@ public class Quiz {
     public void endQuiz() {
         // check if the participant that issued the command is the admin in the App.QuizManager
         //TODO calculate stats
+        ArrayList<String> scores = new ArrayList<>();
+
+        participants.sort((p1, p2) -> p2.getScore() - p1.getScore());
+
+        for(Participant participant : participants) {
+            scores.add(participant.getUsername() + " : " + participant.getScore());
+        }
+
+
 
         state = QuizState.FINISHED;
-        Stats stats = new Stats(participants);
+
+        Stats stats = new Stats(scores);
 
         Message message = new Message();
         message.setMessage("stats");
