@@ -9,10 +9,12 @@ import enums.QuizState;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 
 public class QuizManager {
     private static QuizManager instance;
     private HashMap<Integer,Quiz> quizzes;
+
 
     private QuizManager() {
         quizzes = new HashMap<>();
@@ -40,6 +42,10 @@ public class QuizManager {
     }
     public void endQuiz(int quizId) {
         // TODO: handle for participants
+        Quiz quiz = quizzes.get(quizId);
+
+        quiz.endQuiz();
+
         quizzes.remove(quizId);
     }
     public void startQuiz(int quizId) {
@@ -55,13 +61,13 @@ public class QuizManager {
         quiz.addParticipant(participant);
 
     }
-    public void removeParticipantFromQuiz(int quizId, Participant participant) {
-        //disconnect case
-        quiz.removeParticipant(participant);
-    }
-    public void answerQuestion(int quizId, Participant participant, Answer answer) {
-
-        quiz.answerQuestion(participant, answer);
+//    public void removeParticipantFromQuiz(int quizId, Participant participant) {
+//        //disconnect case
+//        quiz.removeParticipant(participant);
+//    }
+    public void answerQuestion(int quizId, String username, int questionIndex, int optionIndex) {
+        Quiz quiz = quizzes.get(quizId);
+        quiz.answerQuestion(username, questionIndex, optionIndex);
     }
 
     private int generateRandomQuizId() {

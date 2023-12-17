@@ -10,11 +10,10 @@ import lombok.Setter;
 public class Participant {
 
     private String username;
-    private int quizId;
     private int score;
     private ClientHandler clientHandler;
 
-    public Participant(String username,ClientHandler clientHandler, int quizId) {
+    public Participant(String username,ClientHandler clientHandler) {
         this.username = username;
         this.score = 0;
         this.clientHandler = clientHandler;

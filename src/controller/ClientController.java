@@ -1,9 +1,6 @@
 package controller;
 import App.ClientHandler;
-import Model.JoinQuizRequest;
-import Model.Message;
-import Model.Participant;
-import Model.Quiz;
+import Model.*;
 import service.ClientService;
 
 public class ClientController {
@@ -28,7 +25,8 @@ public class ClientController {
 
                 break;
             case "answer.question":
-                clientService.answerQuestion(message);
+                Answer answer = (Answer)message.getPayload();
+                clientService.answerQuestion(answer);
                 break;
             case "create.quiz":
                 Participant admin = new Participant("admin", clientHandler);
@@ -37,10 +35,12 @@ public class ClientController {
                 clientService.createQuiz(quiz);
                 break;
             case "end.quiz":
-                clientService.endQuiz(message);
+                Integer quizIdEnd = (Integer)message.getPayload();
+                clientService.endQuiz(quizIdEnd);
                 break;
             case "next.question":
-                clientService.nextQuestion(message);
+                Integer quizIdNext = (Integer)message.getPayload();
+                clientService.nextQuestion(quizIdNext);
                 break;
 
             default:

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientHandler implements Runnable {
     private Socket socket;
@@ -49,8 +50,10 @@ public class ClientHandler implements Runnable {
             }
 
         } catch (IOException e) {
+            System.out.println("Client disconnected");
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             try {
                 socket.close();
             } catch (IOException e) {

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.concurrent.Semaphore;
 
 
 @Getter
@@ -22,9 +24,19 @@ public class Quiz {
     private QuizState state;
 
 
-    public void nextQuestion() {
+    public synchronized void nextQuestion() {
         // check if the participant that issued the command is the admin in the App.QuizManager
+
         currentQuestionIndex++;
+
+        Question question = questions.get(currentQuestionIndex);
+
+        Message message = new Message();
+        message.setMessage("question");
+        message.setObjectType("Question");
+        message.setPayload(question);
+
+        broadcastToParticipants(message);
     }
     public void startQuiz() {
         // check if the participant that issued the command is the admin in the App.QuizManager
@@ -42,9 +54,27 @@ public class Quiz {
     }
     public void endQuiz() {
         // check if the participant that issued the command is the admin in the App.QuizManager
+        //TODO calculate stats
+
         state = QuizState.FINISHED;
+        Stats stats = new Stats(participants);
+
+        Message message = new Message();
+        message.setMessage("stats");
+        message.setObjectType("Stats");
+        message.setPayload(stats);
+
+        broadcastToParticipants(message);
+        admin.getClientHandler().sendMessage(message);
+
+
     }
     public void addParticipant(Participant participant) {
+        // check if quiz state is waiting for players
+        if (state != QuizState.WAITING_FOR_PLAYERS) {
+            //TODO handle error
+            return;
+        }
 
         participants.add(participant);
 
@@ -56,20 +86,28 @@ public class Quiz {
         message.setPayload(numberOfParticipants);
 
         broadcastToParticipants(message);
+        admin.getClientHandler().sendMessage(message);
 
     }
     public void removeParticipant(Participant participant) {
         participants.remove(participant);
     }
-    public void answerQuestion(Participant participant, Answer answer) {
 
-        if(answer.getQuestionIndex() != currentQuestionIndex) {
+
+    public synchronized void answerQuestion(String username,int questionIndex, int optionIndex) {
+
+        if(questionIndex != currentQuestionIndex) {
             //TODO handle error
             return;
         }
+
         Question question = questions.get(currentQuestionIndex);
-        if (question.getCorrectAnswerIndex() == answer.getAnswerIndex()) {
-            //TODO handle correct answer
+
+        if (question.getCorrectAnswerIndex() == optionIndex) {
+
+            Optional<Participant> participant = participants.stream().filter(p -> p.getUsername().equals(username)).findFirst();
+            participant.ifPresent(Participant::increaseScore);
+
         } else {
             //TODO handle wrong answer
         }
@@ -80,5 +118,8 @@ public class Quiz {
             participant.getClientHandler().sendMessage(message);
         }
     }
+
+
+
 
 }

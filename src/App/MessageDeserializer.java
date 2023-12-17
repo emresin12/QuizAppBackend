@@ -25,6 +25,13 @@ public class MessageDeserializer implements JsonDeserializer<Message> {
             case "JoinQuizRequest":
                 payload = context.deserialize(jsonObject.get("payload"), JoinQuizRequest.class);
                 break;
+            case "Integer":
+                payload = context.deserialize(jsonObject.get("payload"), Integer.class);
+                break;
+            case "String":
+                payload = context.deserialize(jsonObject.get("payload"), String.class);
+                break;
+
         }
 
         return new Message(message, objectType, payload);
