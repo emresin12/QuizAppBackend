@@ -57,8 +57,16 @@ public class QuizManager {
     }
     public void addParticipantToQuiz(int quizId, Participant participant) {
         Quiz quiz = quizzes.get(quizId);
-        quiz.addParticipant(participant);
-
+        if(quiz != null) {
+            quiz.addParticipant(participant);
+        }
+        else{
+            Message m = new Message();
+            m.setMessage("error");
+            m.setObjectType("String");
+            m.setPayload("hosted quiz id not found");
+            participant.getClientHandler().sendMessage(m);
+        }
     }
 //    public void removeParticipantFromQuiz(int quizId, Participant participant) {
 //        //disconnect case
@@ -78,8 +86,6 @@ public class QuizManager {
             randId = random.nextInt(1000, 9999);
         }
         return randId;
-
-
     }
 
 
