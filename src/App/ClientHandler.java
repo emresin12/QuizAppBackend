@@ -3,6 +3,7 @@ package App;
 import Model.Message;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import controller.ClientController;
 
 import java.io.BufferedReader;
@@ -10,12 +11,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class ClientHandler implements Runnable {
-    private Socket socket;
-    private PrintWriter out;
-    private BufferedReader in;
+    private final Socket socket;
+    private final PrintWriter out;
+    private final BufferedReader in;
     private final ClientController clientController;
     Gson gson;
     public ClientHandler(Socket socket, ClientController clientController) throws IOException {
@@ -25,9 +25,7 @@ public class ClientHandler implements Runnable {
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Message.class, new MessageDeserializer());
-        Gson gson = gsonBuilder.create();
-
-        this.gson = gson;
+        this.gson = gsonBuilder.create();
         this.clientController = clientController;
     }
 
@@ -37,11 +35,19 @@ public class ClientHandler implements Runnable {
         try {
             String clientMessage;
             while ((clientMessage = in.readLine()) != null) {
+                Message message;
+                try {
+                    message = gson.fromJson(clientMessage, Message.class);
+                } catch (JsonSyntaxException e) {
+                    sendMessage(new Message("error", "String", "invalid json"));
+                    continue;
+                }
 
+                if(message == null){
+                    sendMessage(new Message("error", "String", "invalid message format"));
+                    continue;
+                }
 
-                Message message = gson.fromJson(clientMessage, Message.class);
-//                Object payload = message.getPayload();
-//                String payloadType = message.getObjectType();
                 clientController.RouteMessage(message, this);
 
                 System.out.println("Received message: " + message);
